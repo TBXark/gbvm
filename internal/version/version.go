@@ -5,15 +5,50 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
+	"time"
 
 	"github.com/TBXark/gbvm/internal/env"
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
 )
 
-func FetchLatest(modName string) (string, error) {
-	url := fmt.Sprintf("%s/%s/@latest", env.GoProxy, strings.ToLower(modName))
-	resp, err := http.Get(url)
+func FetchLatest(modName string) (string, string, error) {
+	proxies, err := proxyCandidates(env.GoProxies)
+	if err != nil {
+		return "", "", err
+	}
+	escapedPath, err := module.EscapePath(modName)
+	if err != nil {
+		return "", "", err
+	}
+	var latestVersion string
+	var selectedProxy string
+	var lastErr error
+	for _, proxy := range proxies {
+		version, err := fetchLatestFromProxy(proxy, escapedPath)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		if latestVersion == "" || Compare(latestVersion, version) < 0 {
+			latestVersion = version
+			selectedProxy = proxy
+		}
+	}
+	if latestVersion == "" {
+		if lastErr != nil {
+			return "", "", lastErr
+		}
+		return "", "", fmt.Errorf("no valid GOPROXY endpoint")
+	}
+	return latestVersion, selectedProxy, nil
+}
+
+func fetchLatestFromProxy(proxy, escapedPath string) (string, error) {
+	url := fmt.Sprintf("%s/%s/@latest", proxy, escapedPath)
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Get(url)
 	if err != nil {
 		return "", err
 	}
@@ -41,40 +76,57 @@ func FetchLatest(modName string) (string, error) {
 }
 
 func Compare(v1, v2 string) int {
-	parts1 := strings.Split(trimVersion(v1), ".")
-	parts2 := strings.Split(trimVersion(v2), ".")
-	maxLen := len(parts1)
-	if len(parts2) > maxLen {
-		maxLen = len(parts2)
-	}
-	for i := 0; i < maxLen; i++ {
-		num1 := 0
-		if i < len(parts1) {
-			num1, _ = strconv.Atoi(parts1[i])
-		}
-		num2 := 0
-		if i < len(parts2) {
-			num2, _ = strconv.Atoi(parts2[i])
-		}
-		if num1 > num2 {
-			return 1
-		}
-		if num1 < num2 {
-			return -1
-		}
-	}
-	return 0
+	return semver.Compare(normalizeVersion(v1), normalizeVersion(v2))
 }
 
-func trimVersion(version string) string {
+func normalizeVersion(version string) string {
 	if version == env.DevelVersion {
-		return "0"
+		return "v0.0.0"
 	}
-	ver := strings.Split(strings.TrimPrefix(version, "v"), "-")
-	if len(ver) > 1 && ver[0] == "0.0.0" {
-		if ts, err := strconv.ParseInt(ver[1], 10, 64); err == nil {
-			return fmt.Sprintf("0.0.0.%d", ts)
+	normalized := version
+	if !strings.HasPrefix(normalized, "v") {
+		normalized = "v" + normalized
+	}
+	if semver.IsValid(normalized) {
+		return normalized
+	}
+	trimmed := strings.TrimPrefix(version, "v")
+	parts := strings.Split(trimmed, "-")
+	fallback := "v" + parts[0]
+	if semver.IsValid(fallback) {
+		return fallback
+	}
+	return "v0.0.0"
+}
+
+func proxyCandidates(proxies []string) ([]string, error) {
+	var candidates []string
+	seen := make(map[string]struct{})
+	for _, part := range proxies {
+		trimmed := strings.TrimSpace(part)
+		if trimmed == "" {
+			continue
+		}
+		if trimmed == "direct" {
+			if _, exists := seen[env.OfficialProxy]; !exists {
+				candidates = append(candidates, env.OfficialProxy)
+				seen[env.OfficialProxy] = struct{}{}
+			}
+			continue
+		}
+		if trimmed == "off" {
+			return nil, fmt.Errorf("GOPROXY is off")
+		}
+		if strings.HasPrefix(trimmed, "http://") || strings.HasPrefix(trimmed, "https://") {
+			cleaned := strings.TrimRight(trimmed, "/")
+			if _, exists := seen[cleaned]; !exists {
+				candidates = append(candidates, cleaned)
+				seen[cleaned] = struct{}{}
+			}
 		}
 	}
-	return ver[0]
+	if len(candidates) == 0 {
+		return nil, fmt.Errorf("no valid GOPROXY endpoint")
+	}
+	return candidates, nil
 }

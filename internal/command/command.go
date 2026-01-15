@@ -2,8 +2,9 @@ package command
 
 import (
 	"flag"
-	"fmt"
 	"os"
+
+	"github.com/TBXark/gbvm/internal/log"
 )
 
 type Command struct {
@@ -42,11 +43,11 @@ func Execute(commands map[string]*Command, printDefaults func()) {
 	}
 
 	if err := cmd.FlagSet.Parse(os.Args[2:]); err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return
 	}
 
 	if err := cmd.HandleFunc(); err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 }

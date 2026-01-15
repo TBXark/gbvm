@@ -1,6 +1,6 @@
 # gbvm
 
-A command line tool to manage Go binaries installed in your `GOPATH/bin` directory. It helps you list installed binaries, check their versions, and upgrade them to the latest available versions.
+`gbvm` is a command-line tool for managing Go binaries installed in your `GOPATH/bin` directory. It lets you list installed binaries, check their versions, back up the list to JSON, and upgrade binaries to the latest releases.
 
 ## Installation
 
@@ -8,45 +8,47 @@ A command line tool to manage Go binaries installed in your `GOPATH/bin` directo
 go install github.com/TBXark/gbvm@latest
 ```
 
-## Usage
+## Commands
+
+### list
 
 ```bash
 Usage: gbvm list [options]
 
 List all installed Go binaries
 
-  -help
-        show help
-  -json
-        json mode
-  -versions
-        show version
+Options:
+  -help      show help (default: false)
+  -json      json mode (default: false)
+  -verbose   show scan errors (default: false)
+  -versions  show version (default: false)
 ```
+
+### install
 
 ```bash
 Usage: gbvm install [options] <backup file>
 
 Install Go binaries from backup file
 
-  -help
-        show help
+Options:
+  -help  show help (default: false)
 ```
+
+### upgrade
 
 ```bash
 Usage: gbvm upgrade [options] [bin1 bin2 ...]
 
 Upgrade Go binaries
 
-  -help
-        show help
-  -skip-dev
-        skip dev version
+Options:
+  -help      show help (default: false)
+  -skip-dev  skip dev version (default: false)
+  -verbose   show scan errors (default: false)
 ```
 
-
-### Install Command
-
-Installs binaries from a backup JSON file.
+## Examples
 
 ```bash
 # Install binaries from backup
@@ -58,13 +60,13 @@ gbvm list -versions
 # List binaries in JSON format
 gbvm list -json
 
-# Upgrade a specific binary
+# Upgrade specific binaries
 gbvm upgrade bin1 bin2
 
 # Upgrade all binaries except development versions
-gbvm upgrade
+gbvm upgrade -skip-dev
 ```
 
 ## License
 
-**gbvm** is released under the MIT license. [See LICENSE](LICENSE) for details.
+`gbvm` is released under the MIT license. See [LICENSE](LICENSE) for details.

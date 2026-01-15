@@ -14,20 +14,20 @@ import (
 func NewListCommand() *command.Command {
 	fs := flag.NewFlagSet("list", flag.ExitOnError)
 	fs.Usage = func() {
-		fmt.Printf("Usage: gbvm list [options]\n\n")
-		fmt.Printf("List all installed Go binaries\n\n")
-		fs.PrintDefaults()
+		command.PrintUsage(fs, "gbvm list [options]", "List all installed Go binaries")
 	}
 	showVersion := fs.Bool("versions", false, "show version")
 	jsonMode := fs.Bool("json", false, "json mode")
+	verbose := fs.Bool("verbose", false, "show scan errors")
 	cmd := command.NewCommand(fs, func() error {
-		return handleList(*jsonMode, *showVersion)
+		return handleList(*jsonMode, *showVersion, *verbose)
 	})
+	cmd.Usage = "List all installed Go binaries"
 	return cmd
 }
 
-func handleList(jsonMode, showVersion bool) error {
-	versions, err := bin.LoadAllBinVersions()
+func handleList(jsonMode, showVersion, verbose bool) error {
+	versions, err := bin.LoadAllBinVersions(verbose)
 	if err != nil {
 		return err
 	}
