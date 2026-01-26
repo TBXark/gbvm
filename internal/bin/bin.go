@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/TBXark/gbvm/internal/env"
-	"github.com/TBXark/gbvm/internal/log"
+	"github.com/tbxark/gbvm/internal/env"
+	"github.com/tbxark/gbvm/internal/log"
 )
 
 type Info struct {

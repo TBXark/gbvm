@@ -3,7 +3,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/TBXark/gbvm/internal/bin"
+	"github.com/tbxark/gbvm/internal/bin"
 )
 
 func TestDetermineUpgrade(t *testing.T) {

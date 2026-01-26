@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/TBXark/gbvm/internal/env"
+	"github.com/tbxark/gbvm/internal/env"
 )
 
 func TestNormalizeVersion(t *testing.T) {

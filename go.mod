@@ -1,4 +1,4 @@
-module github.com/TBXark/gbvm
+module github.com/tbxark/gbvm
 
 go 1.24.0
 

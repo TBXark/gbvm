@@ -14,14 +14,14 @@ func PrintUsage(fs *flag.FlagSet, usageLine, description string) {
 	if output == nil {
 		output = os.Stderr
 	}
-	fmt.Fprintf(output, "Usage: %s\n", usageLine)
+	_, _ = fmt.Fprintf(output, "Usage: %s\n", usageLine)
 	if description != "" {
-		fmt.Fprintf(output, "\n%s\n", description)
+		_, _ = fmt.Fprintf(output, "\n%s\n", description)
 	}
-	fmt.Fprintln(output)
-	fmt.Fprintln(output, "Options:")
+	_, _ = fmt.Fprintln(output)
+	_, _ = fmt.Fprintln(output, "Options:")
 	if !hasFlags(fs) {
-		fmt.Fprintln(output, "  (none)")
+		_, _ = fmt.Fprintln(output, "  (none)")
 		return
 	}
 	PrintFlagDefaults(fs, output)
@@ -40,7 +40,7 @@ func PrintCommandsUsage(commands map[string]*Command, program, description strin
 		if summary == "" {
 			summary = cmd.FlagSet.Name()
 		}
-		fmt.Fprintf(w, "  %s\t%s\n", name, summary)
+		_, _ = fmt.Fprintf(w, "  %s\t%s\n", name, summary)
 	}
 	_ = w.Flush()
 	fmt.Printf("\nRun \"%s <command> -help\" for details.\n", program)
@@ -57,7 +57,7 @@ func PrintFlagDefaults(fs *flag.FlagSet, output io.Writer) {
 		if f.DefValue != "" {
 			usage = fmt.Sprintf("%s (default: %s)", usage, f.DefValue)
 		}
-		fmt.Fprintf(w, "  %s\t%s\n", option, usage)
+		_, _ = fmt.Fprintf(w, "  %s\t%s\n", option, usage)
 	})
 	_ = w.Flush()
 }

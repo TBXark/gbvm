@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TBXark/gbvm/internal/bin"
-	"github.com/TBXark/gbvm/internal/command"
-	"github.com/TBXark/gbvm/internal/env"
-	"github.com/TBXark/gbvm/internal/log"
+	"github.com/tbxark/gbvm/internal/bin"
+	"github.com/tbxark/gbvm/internal/command"
+	"github.com/tbxark/gbvm/internal/env"
+	"github.com/tbxark/gbvm/internal/log"
 )
 
 func NewInstallCommand() *command.Command {

@@ -7,8 +7,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/TBXark/gbvm/internal/bin"
-	"github.com/TBXark/gbvm/internal/command"
+	"github.com/tbxark/gbvm/internal/bin"
+	"github.com/tbxark/gbvm/internal/command"
 )
 
 func NewListCommand() *command.Command {

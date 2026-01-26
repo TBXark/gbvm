@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/TBXark/gbvm/internal/log"
+	"github.com/tbxark/gbvm/internal/log"
 )
 
 type Command struct {

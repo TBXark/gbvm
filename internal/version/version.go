@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TBXark/gbvm/internal/env"
+	"github.com/tbxark/gbvm/internal/env"
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
 )

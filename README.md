@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-go install github.com/TBXark/gbvm@latest
+go install github.com/tbxark/gbvm@latest
 ```
 
 ## Commands

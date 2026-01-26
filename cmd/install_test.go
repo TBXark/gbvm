@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/TBXark/gbvm/internal/bin"
+	"github.com/tbxark/gbvm/internal/bin"
 )
 
 func TestParseBackupFile(t *testing.T) {

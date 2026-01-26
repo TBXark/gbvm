@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/TBXark/gbvm/cmd"
-	"github.com/TBXark/gbvm/internal/command"
+	"github.com/tbxark/gbvm/cmd"
+	"github.com/tbxark/gbvm/internal/command"
 )
 
 func main() {
